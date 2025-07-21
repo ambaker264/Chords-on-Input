@@ -1,0 +1,45 @@
+The basic premise of this project is to make chords in real time with respect to user request and controller input.
+
+A couple basic examples of this program's use case would be:
+
+    -A video game where combos sync with the music in new harmonic ways no matter which combo route is taken.
+    -A vst that will just generate chord progressions that work according to user specifications - useful for
+    improvising music and the like.
+
+Basic program layout:
+
+MODEL:
+    -structuring of chord progressions in a certain time frame/#of chords such that they will work. Logic!
+    -start with major/minor keys and progressions there - mainly use jazz, bc thats what I know
+
+VIEW:
+    -essentially the musical output. We get the notes from the model and then play them.
+    -probably send midi to a vst?
+
+CONTROLLER:
+    -2 parts to recieving input: startup and then realtime inputs
+    -Startup contains info for key, ending direction, 
+
+POSSIBLE ADDITIONS:
+    -note length modifiers, along with other tricks
+    -randomization
+    -more keys
+    -more harmonic techniques
+    -voice leading
+    -bass lines
+
+
+
+Basic Class Structure/Problem solving:
+
+    Progression -> Chord -> Note 
+    How to communicate allowed chord motions? Voiceleading, probably.
+
+    For now stay diatonic, with only a couple borrowed notes, like a backdoor 2-5.
+
+    Input: We will do text input for now. Maybe just a function to recieve it?
+        Put in how many chords needed, then let it go off ig.
+
+
+
+    Output: C++ to midi (how to vst ig)
