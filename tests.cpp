@@ -1,6 +1,7 @@
 #include "Note.h"
 #include "Chord.h"
 #include "Progression_Maker.h"
+#include "assert.h"
 
 
 /*Running Tests requires a main function, makes sense.*/
