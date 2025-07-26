@@ -6,14 +6,14 @@ static std::vector<Note> * major_chord_add_3(std::vector<Note> * to_modify, bool
 
 
 
-Chord::Chord(std::string chord_name, Chord_Purpose purpose, int rom_num, int octave){
+Chord::Chord(std::string name, Chord_Purpose function, int rom_num, int octave){
     this->roman_numeral = rom_num;
     this->purpose = purpose;
-    this->chord_name = chord_name; //Hopefully this is memory safe?
+    this->chord_name = name; //Hopefully this is memory safe?
 
     /*now we generate notes off of the chord name*/
     
-    this->notes_in_chord = generate_chord_notes(chord_name, octave);
+    this->notes_in_chord = generate_chord_notes(name, octave);
 }
 
 
@@ -38,7 +38,7 @@ std::vector<Note> * Chord::generate_chord_notes(std::string name, int octave){
     enum Tone root;
     to_add.octave = octave;
 
-    bool flat = false, bool one_char_name;
+    bool flat = false, one_char_name;
 
     //If just saying smth like: C or Cb, then name[1] will fail. Need a check.
 
@@ -55,7 +55,7 @@ std::vector<Note> * Chord::generate_chord_notes(std::string name, int octave){
         case 'D':
         if(one_char_name && name[++name_idx] == 'b'){
             root = Db;
-            bool flat = true;
+            flat = true;
         }else{
             root = D;
         }
@@ -63,7 +63,7 @@ std::vector<Note> * Chord::generate_chord_notes(std::string name, int octave){
         case 'E':
         if(one_char_name && name[++name_idx] == 'b'){
             root = Eb;
-            bool flat = true;
+            flat = true;
         }else{
             root = E;
         } 
@@ -74,7 +74,7 @@ std::vector<Note> * Chord::generate_chord_notes(std::string name, int octave){
         case 'G':
         if(one_char_name && name[++name_idx] == 'b'){
             root = Gb;
-            bool flat = true;
+            flat = true;
         }else{
             root = G;
         } 
@@ -82,7 +82,7 @@ std::vector<Note> * Chord::generate_chord_notes(std::string name, int octave){
         case 'A':
         if(one_char_name && name[++name_idx] == 'b'){
             root = Ab;
-            bool flat = true;
+            flat = true;
         }else{
             root = A;
         } 
@@ -90,7 +90,7 @@ std::vector<Note> * Chord::generate_chord_notes(std::string name, int octave){
         case 'B':
         if(one_char_name && name[++name_idx] == 'b'){
             root = Bb;
-            bool flat = true;
+            flat = true;
         }else{
             root = B;
         } 
@@ -119,11 +119,19 @@ std::vector<Note> * Chord::generate_chord_notes(std::string name, int octave){
     }
 
     switch(name[name_idx]){
+        case 'm':
+            /*Lots of things to check here. Cm7 is a C minor 7, but Cmaj or
+            Cmin7 also work. Will need to update as we check further.*/
+            break;
         case '^':
-        //Major chord, so just tack on a major 3, but note that 7 will be major too.
-        maj7 = true;
+            major_chord_add_3(out, &maj7);
+            break;
         case '-':
-        //Minor chord, pretty simple.
+            //Minor chord, pretty simple.
+            minor_chord_add_3(out);
+            break;
+        default:
+        throw std::invalid_argument("Unrecognizable chord symbol.");
     }
 
     //Be sure to add 1 to octave if the 3rd is lower than the root. Root Position!

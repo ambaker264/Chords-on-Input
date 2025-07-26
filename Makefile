@@ -1,6 +1,6 @@
-CC = gcc
+CC = g++
 #note that we may need to specify a C++ version that we are using.
-CPPFLAGS = -g -Wall -O0 -Werror -Wshadow -Wwrite-strings
+CPPFLAGS = -g -Wall -O0 -Wshadow -Wwrite-strings
 
 .PHONY: clean
 
