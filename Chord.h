@@ -43,6 +43,8 @@ class Chord{
     Chord * generate_chord(Note root, Mode key, Chord * preceding, Chord_Purpose needed_function);
     /*General chord constructor, has the most detail of all of them.*/
     Chord(std::string chord_name, Chord_Purpose puropose, int rom_num, int octave);
+    /*Prints all relevant data to the chord to cout.*/
+    Chord * print_chord_data();
 
     
 };

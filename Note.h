@@ -9,5 +9,7 @@ typedef enum Tone{
 struct Note{
     int octave;
     tone pitch;
+    /*Converts a note number to a pitch. Anything outside 0-11 will fail.*/
+    Tone convert_number_to_pitch(int number);
 };
 #endif
