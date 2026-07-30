@@ -16,6 +16,14 @@
     <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
+  <repositories>
+	  <repository>
+	  	<id>jitpack.io</id>
+		  <url>https://jitpack.io</url>
+	  </repository>
+  </repositories>
+
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -39,6 +47,13 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- Source: https://mvnrepository.com/artifact/jfugue/jfugue -->
+    <dependency>
+      <groupId>com.github.JensPiegsa</groupId>
+      <artifactId>jfugue</artifactId>
+      <version>5.0.9</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
