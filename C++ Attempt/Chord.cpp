@@ -16,6 +16,19 @@ Chord::Chord(std::string name, Chord_Purpose function, int rom_num, int octave){
     this->notes_in_chord = generate_chord_notes(name, octave);
 }
 
+Chord::Chord(std::string name, Chord_Purpose fucntion, int rom_num, 
+const std::vector<Note> * notes_in_chord){
+    this->roman_numeral = rom_num;
+    this->purpose = purpose;
+    this->chord_name = name;
+
+    for(Note current : *notes_in_chord){
+        this->notes_in_chord->push_back(current); //Check for copy safety!!!
+    }
+
+
+}
+
 
 std::vector<Note> * Chord::get_chord_notes(){
     //Deep copy - down to the notes, then return.

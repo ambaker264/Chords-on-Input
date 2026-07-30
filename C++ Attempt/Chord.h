@@ -29,8 +29,7 @@ class Chord{
     /*Generates a chord from its name. Has an expected format. Voicing will be tricky.
     Start with base position voicings, then we can modify.
     
-    
-    
+    Also RENAMES the chord based on given name. We want standardization here! 
     */
     static std::vector<Note> * generate_chord_notes(std::string name, int octave);
 
@@ -43,9 +42,11 @@ class Chord{
     Chord * generate_chord(Note root, Mode key, Chord * preceding, Chord_Purpose needed_function);
     /*General chord constructor, has the most detail of all of them.*/
     Chord(std::string chord_name, Chord_Purpose puropose, int rom_num, int octave);
+    /*Overload of general so you can set chords from a manual list of notes.*/
+    Chord(std::string name, Chord_Purpose fucntion, int rom_num, const std::vector<Note> * notes_in_chord);
     /*Prints all relevant data to the chord to cout.*/
     Chord * print_chord_data();
 
-    
+   //NEEDS A COPY CONSTRUCTOR!!! 
 };
 #endif
