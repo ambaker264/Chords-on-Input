@@ -43,16 +43,27 @@ public class TestDriver {
 
         String input = "Exit";
         
+        this.sendInputString(input);
+        this.run_test();
 
         testUtilShutdown();
+        assertTrue(true);
     }
 
     /*Sets up input lines, makes the shell and starts it, etc. */
     private void testUtilSetup(){
-        shellObj = ShellPrompt.getInstance();
+        shellObj = ShellPrompt.getInstance(); 
     }
     private void testUtilShutdown(){
         
+    }
+
+    private void run_test(){
+        try {
+            shellObj.startShell();
+        } catch (Exception e) {
+            assertTrue(false);
+        }
     }
 
     private void sendInputString(String input){
