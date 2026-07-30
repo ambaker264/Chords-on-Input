@@ -17,23 +17,24 @@ public final class ShellPrompt {
     private boolean cont_loop = true;
 
 
-    private ShellPrompt(){
+    private ShellPrompt(InputStream inputStream){
         prev_Commands = new Stack<String>();
-        input_reader = new Scanner(System.in);
+        prev_Commands_temp = new Stack<String>();
+        input_reader = new Scanner(inputStream);
     }
 
-    public static ShellPrompt getInstance(){
+    public static ShellPrompt getInstance(InputStream inputStream){
         if(singletonCheck == null){
-            singletonCheck = new ShellPrompt();
+            singletonCheck = new ShellPrompt(inputStream);
         }
         return singletonCheck;
     }
 
 
     /*Helps handle multithreading issues.*/
-    public void startShell() throws Exception{
+    public void startShell() throws IllegalStateException{
         if(mainloop_running){
-            throw new Exception("Main Loop Already Running");
+            throw new IllegalStateException("Main Loop Already Running");
         }
         mainloop_running = true;
         this.mainLoop();
@@ -84,6 +85,7 @@ public final class ShellPrompt {
             default -> System.out.println(INVALID_COMMAND_STRING);
        }
        prev_Commands.push(command);
+
        prev_Commands_temp.clear();
        prev_Commands_temp.addAll(prev_Commands);
     }

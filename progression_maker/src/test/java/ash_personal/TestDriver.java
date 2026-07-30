@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class TestDriver {
 
     private ShellPrompt shellObj;
-    private InputStream originalIn = System.in;
+    private final InputStream originalIn = System.in;
 
 
     /**
@@ -39,41 +39,27 @@ public class TestDriver {
 
     @Test
     public void test_basic_shell(){
-        testUtilSetup();
+
+        System.out.println("STARTING BASIC EXIT SHELL TEST");
 
         String input = "Exit";
+        this.run_test(input);
         
-        this.sendInputString(input);
-        this.run_test();
-
-        testUtilShutdown();
         assertTrue(true);
     }
 
-    /*Sets up input lines, makes the shell and starts it, etc. */
-    private void testUtilSetup(){
-        shellObj = ShellPrompt.getInstance(); 
-    }
-    private void testUtilShutdown(){
-        
-    }
-
-    private void run_test(){
+    private void run_test(String input){
         try {
-            shellObj.startShell();
-        } catch (Exception e) {
+            try {
+                ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+                shellObj = ShellPrompt.getInstance(in);
+            } catch (Exception e) {
+                assertTrue(false);
+            }
+            shellObj.startShell(); //actually runs the program
+        } catch (IllegalStateException e) {
             assertTrue(false);
         }
     }
 
-    private void sendInputString(String input){
-        try {
-            ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-            System.setIn(in);
-        } catch (Exception e) {
-            System.setIn(originalIn);
-            assertTrue(false);
-        }
-        System.setIn(originalIn);
-    }
 }
