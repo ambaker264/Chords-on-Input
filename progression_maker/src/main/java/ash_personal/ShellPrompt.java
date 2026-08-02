@@ -37,6 +37,7 @@ public final class ShellPrompt {
             throw new IllegalStateException("Main Loop Already Running");
         }
         mainloop_running = true;
+        cont_loop = true;
         this.mainLoop();
     }
 
@@ -66,13 +67,20 @@ public final class ShellPrompt {
     }
 
 
-    /*This is where all major commands are handled, and sent off to their respective functions.*/
+    /*This is where all major commands are handled, and sent off to their respective functions.
+    --"Exit" - quits the shell, shuts down.
+    --"Last" - returns last command, or if last command was last, the next one off the stack.
+    --""
+    
+    */
     private void parseCommand(String command){
        command = command.toLowerCase();
+       command = command.strip();
        switch(command){
             case "exit", "quit", "stop" -> {
                 System.out.println("Stopping Shell, Shutting Down");
                 this.setContLoop(false);
+                this.mainloop_running = false;
             }
             case "last", "prev" -> {
                 if(prev_Commands_temp.isEmpty()){
@@ -81,6 +89,9 @@ public final class ShellPrompt {
                     System.out.println(prev_Commands_temp.pop());
                 }
                 return;
+            }
+            case "generate progression", "genprog" ->{
+               //send to the actual method in our progression maker class 
             }
             default -> System.out.println(INVALID_COMMAND_STRING);
        }
