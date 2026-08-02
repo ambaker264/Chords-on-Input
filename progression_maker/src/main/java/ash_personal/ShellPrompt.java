@@ -17,15 +17,14 @@ public final class ShellPrompt {
     private boolean cont_loop = true;
 
 
-    private ShellPrompt(InputStream inputStream){
+    private ShellPrompt(){
         prev_Commands = new Stack<String>();
         prev_Commands_temp = new Stack<String>();
-        input_reader = new Scanner(inputStream);
     }
 
-    public static ShellPrompt getInstance(InputStream inputStream){
+    public static ShellPrompt getInstance(){
         if(singletonCheck == null){
-            singletonCheck = new ShellPrompt(inputStream);
+            singletonCheck = new ShellPrompt();
         }
         return singletonCheck;
     }
@@ -48,7 +47,7 @@ public final class ShellPrompt {
         while(cont){
             cont = false;
             System.out.print(">");
-            userInput = input_reader.nextLine();
+            userInput = input_reader.next();
             if(userInput.isBlank()){
                 cont = true;
             }
@@ -70,7 +69,7 @@ public final class ShellPrompt {
     /*This is where all major commands are handled, and sent off to their respective functions.
     --"Exit" - quits the shell, shuts down.
     --"Last" - returns last command, or if last command was last, the next one off the stack.
-    --""
+    --"Echo" - repeats rest of the line of input.
     
     */
     private void parseCommand(String command){
@@ -84,11 +83,16 @@ public final class ShellPrompt {
             }
             case "last", "prev" -> {
                 if(prev_Commands_temp.isEmpty()){
-                    System.out.println("No Further Previous Commands");
+                    System.err.println("No Further Previous Commands.");
                 }else{
                     System.out.println(prev_Commands_temp.pop());
                 }
                 return;
+            }
+            case "echo" -> {
+                if(input_reader.hasNext()){
+                    System.out.println(input_reader.nextLine());
+                }
             }
             case "generate progression", "genprog" ->{
                //send to the actual method in our progression maker class 
@@ -104,6 +108,10 @@ public final class ShellPrompt {
     private boolean setContLoop(boolean cont_loop){
         this.cont_loop = cont_loop;
         return cont_loop;
+    }
+
+    public void new_input_source(InputStream input){
+        this.input_reader = new Scanner(input);
     }
     
 }

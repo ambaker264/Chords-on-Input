@@ -66,11 +66,21 @@ public class TestDriver {
 
     }
 
+    @Test
+    public void echo_test(){
+        System.out.println("----ECHO TEST----\n");
+        String input = "echo lmao\n exit";
+        this.run_test(input);
+        this.testClose();
+        assertTrue(true);
+    }
+
     private void run_test(String input){
         try {
             try {
                 this.in = new ByteArrayInputStream(input.getBytes());
-                shellObj = ShellPrompt.getInstance(this.in);
+                shellObj = ShellPrompt.getInstance();
+                shellObj.new_input_source(this.in);
             } catch (Exception e) {
                 assertTrue(false);
             }
