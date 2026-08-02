@@ -82,10 +82,12 @@ public class TestDriver {
                 shellObj = ShellPrompt.getInstance();
                 shellObj.new_input_source(this.in);
             } catch (Exception e) {
+                System.err.println(e.getMessage());
                 assertTrue(false);
             }
             shellObj.startShell(); //actually runs the program
         } catch (IllegalStateException e) {
+            System.err.println(e.getMessage());
             assertTrue(false);
         }
     }
@@ -94,7 +96,7 @@ public class TestDriver {
         try { 
             in.close();  
         } catch (IOException e) {
-            System.err.println("IO Problem on Shutdown.");
+            System.err.println(e.getMessage());
         }
     }
 }

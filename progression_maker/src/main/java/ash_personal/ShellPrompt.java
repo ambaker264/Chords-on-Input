@@ -1,5 +1,6 @@
 package ash_personal;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.Stack;
@@ -41,13 +42,17 @@ public final class ShellPrompt {
     }
 
 
-    private String getUserInput(){
+    private String getUserInput() throws IOException{
        boolean cont = true;
        String userInput = null;
         while(cont){
             cont = false;
             System.out.print(">");
-            userInput = input_reader.next();
+            if(input_reader.hasNext()){
+                userInput = input_reader.next();
+            }else{
+                throw new IOException("Please finish IO stream with exit command.");
+            }
             if(userInput.isBlank()){
                 cont = true;
             }
@@ -57,9 +62,14 @@ public final class ShellPrompt {
     
     private void mainLoop(){
         while(cont_loop){
-            String input = null;        
-            input = this.getUserInput();
-            this.parseCommand(input);
+            String input = null;
+            try{     
+                input = this.getUserInput();
+                this.parseCommand(input);
+            }catch(IOException e){
+                cont_loop = false;
+                System.err.println(e.getMessage());
+            }
         }
         System.out.println("Exited Main Loop Successfully.");
         input_reader.close();
