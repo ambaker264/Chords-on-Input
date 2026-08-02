@@ -43,6 +43,10 @@ public class ProgressionMaker {
         }
     }
 
+    public boolean usable(){
+        return usable_object;
+    }
+
     private boolean get_input(){
 
         out_stream.println("Starting Key:");
@@ -55,10 +59,16 @@ public class ProgressionMaker {
             return false;
         }
 
-
+        
 
         return true;
 
+    }
+
+
+    private boolean get_chord(Chord to_get){
+
+        return true;
     }
 
     private boolean get_key(Key to_get){

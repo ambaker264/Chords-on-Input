@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Scanner;
 import java.util.Stack;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 
 /*Runs the shell for input. Singleton Class. Prompts are listed below, and  */
@@ -18,6 +19,7 @@ public final class ShellPrompt {
     private boolean mainloop_running = false;
     private boolean cont_loop = true;
     private PrintStream output_location;
+    private ArrayList<ProgressionMaker> make_history;
 
 
     private ShellPrompt(){
@@ -110,7 +112,12 @@ public final class ShellPrompt {
                //send to the actual method in our progression maker class,
                //but first we get the input.
                 ProgressionMaker prog_maker = new ProgressionMaker(input_reader, output_location);
-                prog_maker.make_progression(); //this is the expensive task.
+                make_history.add(prog_maker);
+                if(!prog_maker.usable()){
+                    System.err.println("Invalid input on this object, cannot Create Progression.");
+                }else{
+                    prog_maker.make_progression(); //this is the expensive task.
+                }
             }
             default -> output_location.println(INVALID_COMMAND_STRING);
        }
