@@ -3,6 +3,7 @@ package ash_personal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 import org.jfugue.player.Player;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,6 +18,7 @@ public class TestDriver {
     private ShellPrompt shellObj;
     private final InputStream originalIn = System.in;
     private ByteArrayInputStream in;
+    private final PrintStream out = System.out;
 
 
     /**
@@ -81,6 +83,7 @@ public class TestDriver {
                 this.in = new ByteArrayInputStream(input.getBytes());
                 shellObj = ShellPrompt.getInstance();
                 shellObj.new_input_source(this.in);
+                shellObj.new_output_source(this.out);
             } catch (Exception e) {
                 System.err.println(e.getMessage());
                 assertTrue(false);

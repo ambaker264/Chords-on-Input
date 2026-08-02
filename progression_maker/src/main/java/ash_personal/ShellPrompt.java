@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.Stack;
+import java.io.PrintStream;
 
 
 /*Runs the shell for input. Singleton Class. Prompts are listed below, and  */
@@ -16,6 +17,7 @@ public final class ShellPrompt {
     private Scanner input_reader;
     private boolean mainloop_running = false;
     private boolean cont_loop = true;
+    private PrintStream output_location;
 
 
     private ShellPrompt(){
@@ -47,7 +49,7 @@ public final class ShellPrompt {
        String userInput = null;
         while(cont){
             cont = false;
-            System.out.print(">");
+            output_location.print(">");
             if(input_reader.hasNext()){
                 userInput = input_reader.next();
             }else{
@@ -71,7 +73,7 @@ public final class ShellPrompt {
                 System.err.println(e.getMessage());
             }
         }
-        System.out.println("Exited Main Loop Successfully.");
+        output_location.println("Exited Main Loop Successfully.");
         input_reader.close();
     }
 
@@ -80,14 +82,14 @@ public final class ShellPrompt {
     --"Exit" - quits the shell, shuts down.
     --"Last" - returns last command, or if last command was last, the next one off the stack.
     --"Echo" - repeats rest of the line of input.
-    
+    --"genprog" - generates the chord progression based on the input 
     */
     private void parseCommand(String command){
        command = command.toLowerCase();
        command = command.strip();
        switch(command){
             case "exit", "quit", "stop" -> {
-                System.out.println("Stopping Shell, Shutting Down");
+                output_location.println("Stopping Shell, Shutting Down");
                 this.setContLoop(false);
                 this.mainloop_running = false;
             }
@@ -95,25 +97,29 @@ public final class ShellPrompt {
                 if(prev_Commands_temp.isEmpty()){
                     System.err.println("No Further Previous Commands.");
                 }else{
-                    System.out.println(prev_Commands_temp.pop());
+                    output_location.println(prev_Commands_temp.pop());
                 }
                 return;
             }
             case "echo" -> {
                 if(input_reader.hasNext()){
-                    System.out.println(input_reader.nextLine());
+                    output_location.println(input_reader.nextLine().strip());
                 }
             }
-            case "generate progression", "genprog" ->{
-               //send to the actual method in our progression maker class 
+            case "generate progression", "genprog" -> {
+               //send to the actual method in our progression maker class,
+               //but first we get the input.
+                ProgressionMaker prog_maker = new ProgressionMaker(input_reader, output_location);
+                prog_maker.make_progression(); //this is the expensive task.
             }
-            default -> System.out.println(INVALID_COMMAND_STRING);
+            default -> output_location.println(INVALID_COMMAND_STRING);
        }
        prev_Commands.push(command);
 
        prev_Commands_temp.clear();
        prev_Commands_temp.addAll(prev_Commands);
     }
+
 
     private boolean setContLoop(boolean cont_loop){
         this.cont_loop = cont_loop;
@@ -122,6 +128,10 @@ public final class ShellPrompt {
 
     public void new_input_source(InputStream input){
         this.input_reader = new Scanner(input);
+    }
+
+    public void new_output_source(PrintStream new_out){
+        this.output_location = new_out;
     }
     
 }

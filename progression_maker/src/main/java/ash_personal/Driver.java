@@ -11,6 +11,7 @@ public class Driver {
 
         ShellPrompt shell = ShellPrompt.getInstance();
         shell.new_input_source(System.in);
+        shell.new_output_source(System.out);
 
         Driver.init();
 
