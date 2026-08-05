@@ -9,11 +9,13 @@ public class Driver {
 
         System.out.println("Setting Up");
 
-        ShellPrompt shell = ShellPrompt.getInstance();
+        ShellPrompt shell = new ShellPrompt();
         shell.new_input_source(System.in);
         shell.new_output_source(System.out);
 
         Driver.init();
+
+        shell.startShell();
 
 
     }

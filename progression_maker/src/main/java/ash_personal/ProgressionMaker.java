@@ -13,16 +13,16 @@ public class ProgressionMaker {
     private static int num_obj = 0;
     private int id;
     private Chord start_chord;
-    private Chord end_cord;
+    private Chord end_chord;
     private int[] time_signature;
     private int num_measures;
     private Key start_key;
     private Key end_key;
-    private Scanner scanner;
+    private final Scanner scanner;
 
-    private boolean usable_object;
+    private final boolean usable_object;
 
-    private PrintStream out_stream;
+    private final PrintStream out_stream;
 
     private ChordProgression output;
 
@@ -43,31 +43,119 @@ public class ProgressionMaker {
         }
     }
 
+    public int getID(){
+        return id;
+    }
+
     public boolean usable(){
         return usable_object;
     }
 
     private boolean get_input(){
 
-        out_stream.println("Starting Key:");
+        out_stream.println("\n----Starting Key:----\n");
         if(!get_key(start_key)){
             return false;
         }
 
-        out_stream.println("Ending Key:");
+        out_stream.println("\n----Ending Key:----\n");
         if(!get_key(end_key)){
             return false;
         }
 
-        
+        out_stream.println("\n----Starting Chord:----\n");
+        if(!get_chord(start_chord)){
+            return false;
+        }
+ 
+        out_stream.println("\n----Ending Chord:----\n");
+        if(!get_chord(end_chord)){
+            return false;
+        }
+
+        if(!get_time_constraints()){
+            return false;
+        }
+
+        out_stream.println("Valid Input Recieved. Generating Progression.");
 
         return true;
 
     }
 
+    private boolean get_time_constraints(){
+        out_stream.println("\n----Time Info----\n");
+        boolean cont_loop = true;
+        while (cont_loop) { 
+            cont_loop = false;
+            out_stream.println("Please input the time signature as 2 ints (ie. 4 4):\n>");
+            this.time_signature = new int[2];
+            for(int i=0; i<=1; i++){
+                if(scanner.hasNextInt()){
+                    this.time_signature[i] = scanner.nextInt();
+                }else{
+                    String check_terminate;
+                    check_terminate = scanner.next().toUpperCase().strip();
+                    if(check_terminate.equals("EXIT") || check_terminate.equals("QUIT")
+                         || check_terminate.equals("STOP")){
+                        return false;
+                    }
+                    cont_loop = true;
+                }
+            }
+            if(!(time_signature[1] == 2 || time_signature[1] == 4 || time_signature[1] == 8)){
+                cont_loop = true;
+            }
+            if(time_signature[0] <= 1){
+                cont_loop = true;
+            }
+            if(cont_loop){
+                out_stream.println("Invalid inputs. Please try again.");
+            } 
+        }
 
+        cont_loop = true;
+        while(cont_loop){
+            cont_loop = false;
+            out_stream.println("Please input the number of measures between the start and end chord:\n>");
+            if(scanner.hasNextInt()){
+                this.num_measures = scanner.nextInt();
+            }else{
+                String check_terminate;
+                check_terminate = scanner.next().toUpperCase().strip();
+                if(check_terminate.equals("EXIT") || check_terminate.equals("QUIT")
+                    || check_terminate.equals("STOP")){
+                    return false;
+                }
+                cont_loop = true;
+            }
+            if(this.num_measures <= 0){
+                cont_loop = true;
+            }
+            if(cont_loop){
+                out_stream.println("Invalid input. Please try again.");
+            }
+        }
+        return true;
+    }
+
+    /*Just using jfugue's chord labeling system, not too bad. Will check for validity of course.*/
     private boolean get_chord(Chord to_get){
-
+        boolean cont_while = true;
+        while(cont_while){
+            cont_while = false;
+            out_stream.println("Please enter (in jFugue chord notation: ie. CMAJ7) the chord you want.\n>");
+            String input = scanner.next().toUpperCase().strip();
+            if(input.equals("EXIT") || input.equals("QUIT") || input.equals("STOP")){
+                return false;
+            }
+            try{
+                to_get = new Chord(input);
+            }catch(NullPointerException e){
+                out_stream.println("Invalid input, please try again, or consult jfugue style for chord input.");
+                cont_while = true;
+            } 
+        }
         return true;
     }
 

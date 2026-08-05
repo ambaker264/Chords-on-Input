@@ -7,8 +7,6 @@ import java.util.Stack;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-
-/*Runs the shell for input. Singleton Class. Prompts are listed below, and  */
 public final class ShellPrompt {
 
     private final String INVALID_COMMAND_STRING =  "Command not recognized. Please check syntax and/or use the \"help\" command to input a valid option.";
@@ -22,17 +20,10 @@ public final class ShellPrompt {
     private ArrayList<ProgressionMaker> make_history;
 
 
-    private ShellPrompt(){
+    public ShellPrompt(){
         prev_Commands = new Stack<String>();
         prev_Commands_temp = new Stack<String>();
-    }
-
-    public static ShellPrompt getInstance(){
-        if(singletonCheck == null){
-            singletonCheck = new ShellPrompt();
-        }
-        return singletonCheck;
-    }
+    } 
 
 
     /*Helps handle multithreading issues.*/
@@ -112,7 +103,11 @@ public final class ShellPrompt {
                //send to the actual method in our progression maker class,
                //but first we get the input.
                 ProgressionMaker prog_maker = new ProgressionMaker(input_reader, output_location);
-                make_history.add(prog_maker);
+                try {
+                    make_history.add(prog_maker);                  
+                } catch (NullPointerException e) {
+                    System.err.println("Initialization of ProgressionMaker failed.");
+                }
                 if(!prog_maker.usable()){
                     System.err.println("Invalid input on this object, cannot Create Progression.");
                 }else{

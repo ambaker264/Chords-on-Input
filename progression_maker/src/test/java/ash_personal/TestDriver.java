@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.jfugue.player.Player;
+import org.jfugue.theory.Chord;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class TestDriver {
 
     private ShellPrompt shellObj;
-    private final InputStream originalIn = System.in;
+    private final InputStream original_in = System.in;
     private ByteArrayInputStream in;
     private final PrintStream out = System.out;
 
@@ -29,6 +30,12 @@ public class TestDriver {
         assertTrue(true);
     }
 
+    /*Can turn back into a test when I need it. Needs to be run unforked.*/
+    @Disabled
+    public void runMain(){
+        Driver.main(null);
+    }
+
     /*Tests the player. Very simple. Doesn't put out sound, not important right
     now.*/ 
     @Disabled
@@ -37,6 +44,22 @@ public class TestDriver {
         Player player = new Player();
 
         player.play("C F A C");
+        assertTrue(true);
+    }
+
+    /*Clogs space.*/
+    @Disabled
+    public void investigate_chord_constructor(){
+        Chord chord = new Chord("CMIN7");
+        out.println(chord.toNoteString());
+    }
+
+    @Test
+    public void basic_chord_loading(){
+        System.out.println("----STARTING BASIC GENPROG TEST----\n");
+        this.run_test("genprog C maj C maj ggg CMAJ CMAJ7");
+
+        this.testClose();
         assertTrue(true);
     }
 
@@ -81,7 +104,7 @@ public class TestDriver {
         try {
             try {
                 this.in = new ByteArrayInputStream(input.getBytes());
-                shellObj = ShellPrompt.getInstance();
+                shellObj = new ShellPrompt();
                 shellObj.new_input_source(this.in);
                 shellObj.new_output_source(this.out);
             } catch (Exception e) {
