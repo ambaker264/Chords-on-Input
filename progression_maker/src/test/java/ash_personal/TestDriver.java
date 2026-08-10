@@ -7,6 +7,10 @@ import java.io.PrintStream;
 
 import org.jfugue.player.Player;
 import org.jfugue.theory.Chord;
+import org.jfugue.theory.Intervals;
+import org.jfugue.theory.Key;
+import org.jfugue.theory.Note;
+import org.jfugue.theory.Scale;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -47,14 +51,36 @@ public class TestDriver {
         assertTrue(true);
     }
 
-    /*Clogs space.*/
-    @Disabled
-    public void investigate_chord_constructor(){
+    @Test
+    public void investigate_chord_note_constructor(){
+
         Chord chord = new Chord("CMIN7");
+        out.println(chord.getRoot().toStringWithoutDuration());
         out.println(chord.toNoteString());
+        out.println(chord.toHumanReadableString());
     }
 
     @Test
+    public void investigate_intervals(){
+
+        out.println("------Interval Test-----\n");
+
+        Note a = new Note("A");
+        Note c = new Note("C");
+        Note[] temp = new Note[2];
+        temp[0] = a;
+        temp[1] = c;
+        int check = Intervals.createIntervalsFromNotes(temp).toHalfstepArray()[1];
+        out.println(check);
+        assertTrue(check == 3 || check == 10);
+
+    }
+
+
+    /**
+     * Have a more cohesive test now. This checked what it needed to.
+     */
+    @Disabled
     public void basic_chord_loading(){
         System.out.println("----STARTING BASIC GENPROG TEST----\n");
         this.run_test("genprog C maj C maj ggg CMAJ CMAJ7");
@@ -63,6 +89,14 @@ public class TestDriver {
         assertTrue(true);
     }
 
+    @Test
+    public void genprog_input(){
+        System.out.println("----STARTING BASIC GENPROG INPUT TEST----\n");
+        this.run_test("genprog C maj C maj ggg CMAJ CMAJ7 3 4 8");
+
+        this.testClose();
+        assertTrue(true);
+    }
 
     @Test
     public void test_basic_shell(){
@@ -100,6 +134,14 @@ public class TestDriver {
         assertTrue(true);
     }
 
+
+    @Test
+    public void set_chord_function(){
+        out.println("----Chord Function Checker----\n");
+        out.println(this.sample_progression().get_start_chord());
+        assertTrue(true);
+    }
+
     private void run_test(String input){
         try {
             try {
@@ -124,5 +166,15 @@ public class TestDriver {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    private RhythmicChordProgression sample_progression(){
+        Chord sc = new Chord("C");
+        Chord ec = new Chord("F");
+        Key sk = new Key(new Note("C"), Scale.MAJOR);
+        Key ek = new Key(new Note("F"), Scale.MAJOR);
+        int[] time = {4, 4};
+        int num_measures = 7;
+        return new RhythmicChordProgression(sc, sk, time, num_measures, ec, ek);
     }
 }

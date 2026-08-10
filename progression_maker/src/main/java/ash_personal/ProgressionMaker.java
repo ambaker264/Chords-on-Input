@@ -43,6 +43,22 @@ public class ProgressionMaker {
         }
     }
 
+    public Chord get_start_chord(){
+        return start_chord;
+    }
+
+    public Chord get_end_chord(){
+        return end_chord;
+    }
+
+    public Key get_start_key(){
+        return start_key;
+    }
+
+    public Key get_end_key(){
+        return end_key;
+    }
+
     public int getID(){
         return id;
     }
