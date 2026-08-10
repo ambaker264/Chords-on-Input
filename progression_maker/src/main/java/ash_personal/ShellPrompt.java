@@ -7,6 +7,9 @@ import java.util.Stack;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+/**
+ * Basic shell interface for the program, prompting the user for input. 
+ */
 public final class ShellPrompt {
 
     private final String INVALID_COMMAND_STRING =  "Command not recognized. Please check syntax and/or use the \"help\" command to input a valid option.";
@@ -19,14 +22,21 @@ public final class ShellPrompt {
     private PrintStream output_location;
     private ArrayList<ProgressionMaker> make_history;
 
-
+    /**
+     * Basic initialization.
+     */
     public ShellPrompt(){
         prev_Commands = new Stack<String>();
         prev_Commands_temp = new Stack<String>();
     } 
 
 
-    /*Helps handle multithreading issues.*/
+    /**
+     * Starts the shell prompt that runs the program. Only call this when ready
+     * for the program to begin running.
+     * @throws IllegalStateException if the main loop is already running i.e. trying to multithread
+     * multiple instances of the object and calling {@code startShell()} twice.
+     */
     public void startShell() throws IllegalStateException{
         if(mainloop_running){
             throw new IllegalStateException("Main Loop Already Running");

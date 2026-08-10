@@ -20,7 +20,7 @@ public class Driver {
 
     }
 
-    public static void init(){
+    private static void init(){
 
     }
 }

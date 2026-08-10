@@ -1,16 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: ash_personal.TestDriver
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 12.21 s <<< FAILURE! -- in ash_personal.TestDriver
-ash_personal.TestDriver.set_chord_function -- Time elapsed: 12.11 s <<< ERROR!
-java.lang.Error: 
-Unresolved compilation problem: 
-	The method add(RhythmicChordProgression.ChordInContext) in the type LinkedList<RhythmicChordProgression.ChordInContext> is not applicable for the arguments (Chord)
-
-	at ash_personal.RhythmicChordProgression.<init>(RhythmicChordProgression.java:34)
-	at ash_personal.TestDriver.sample_progression(TestDriver.java:178)
-	at ash_personal.TestDriver.set_chord_function(TestDriver.java:141)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.085 s -- in ash_personal.TestDriver

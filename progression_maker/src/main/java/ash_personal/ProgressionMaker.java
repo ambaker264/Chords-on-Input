@@ -26,6 +26,11 @@ public class ProgressionMaker {
 
     private ChordProgression output;
 
+    /**
+     * 
+     * @param scanner
+     * @param out_stream Output stream. Must accept strings.
+     */
     public ProgressionMaker(Scanner scanner, PrintStream out_stream){
         this.scanner = scanner;
         id = num_obj;
@@ -37,6 +42,11 @@ public class ProgressionMaker {
         }
     }
 
+    /**
+     * Generates a chord progression based on input recieved, and only if input was valid.
+     * Computationally Expensive.
+     * @throws IllegalStateException
+     */
     public void make_progression() throws IllegalStateException{
         if(!usable_object){
             throw new IllegalStateException("Exited during input, unusable object.");
