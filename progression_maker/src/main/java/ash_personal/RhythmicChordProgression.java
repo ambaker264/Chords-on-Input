@@ -1,5 +1,6 @@
 package ash_personal;
 
+import static java.lang.Math.abs;
 import java.util.LinkedList;
 
 import org.jfugue.theory.Chord;
@@ -40,6 +41,7 @@ public class RhythmicChordProgression {
 
         time_signature = time;
         this.num_measures = num_measures;
+        this.availible_beats = (float) this.num_measures * this.time_signature[0];
 
         progression = new LinkedList<ChordInContext>();
 
@@ -58,11 +60,17 @@ public class RhythmicChordProgression {
      *  
      * @param smaller_progression First and last chord will be ignored (should have beats at 0 anyways).
      * @param front_back True for adding to the front, false for adding from the back in.
+     * @return True if the progression was added, false if not.
      */
-    public void add(RhythmicChordProgression smaller_progression, boolean front_back){
+    public boolean add(RhythmicChordProgression smaller_progression, boolean front_back){
         LinkedList<ChordInContext> smaller = smaller_progression.getLL(); 
-        
-
+        if(smaller_progression.get_progression_length() >= this.get_availible_beats()){
+            return false; 
+        }
+        for(ChordInContext current : smaller){
+            this.add(current, front_back);
+        }
+        return true;
     }
     /**
      * Adds a single chord to the middle of this progression, attached to either
@@ -76,8 +84,24 @@ public class RhythmicChordProgression {
      * @param front_back True for adding to the front, false for adding from the back in.
      * @param length Length of the chord in beats.
      */
-    public void add(Chord to_add, float length, boolean front_back){
-        
+    public boolean add(ChordInContext to_add, boolean front_back){
+        if(to_add == null){
+            return false;
+        }
+        if(to_add.get_num_beats() > this.get_availible_beats()){
+            return false;
+        }
+        if(abs(to_add.get_num_beats() - this.get_availible_beats()) < 0.001f /*Handles float issues*/){
+            //if we have completed the progression, then we get rid of the null in the center.
+            int temp = this.add_index(true);
+            this.progression.remove(null);
+            this.progression.add(temp, to_add);
+            this.availible_beats = 0;
+            return true;
+        }
+        this.progression.add(this.add_index(front_back), to_add);
+        this.availible_beats -= to_add.num_beats;
+        return true;
     }
 
     /**
@@ -111,9 +135,20 @@ public class RhythmicChordProgression {
 
     @Override
     public String toString(){
-
-
-        return "TO STRING NEEDS IMPLEMENTATION";
+        StringBuilder out = new StringBuilder();
+        out.append("---Chord Progression---\nProgression Length (Beats): ");
+        out.append(this.get_progression_length()).append("\n");
+        out.append("Chords:\n\n");
+        for(ChordInContext current : this.progression){
+            if(current == null){
+                out.append("MIDDLE_OF_PROGRESSION_DELINEATOR\n");
+            }else{
+                out.append(current.toString());
+                out.append("\n");
+            }
+            out.append("\n");
+        }
+        return out.toString();
     }
 
 
@@ -136,7 +171,7 @@ public class RhythmicChordProgression {
     /**
      * Copies down to the chords, but the chords are still mutable (shouldn't need to touch
      * them however.)
-     * @return
+     * @return New copied linked list of all chords in the progression.
      */
     public LinkedList<ChordInContext> getLL(){
         LinkedList<ChordInContext> temp = new LinkedList<ChordInContext>();

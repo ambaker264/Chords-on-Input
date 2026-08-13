@@ -17,6 +17,13 @@ public class ChordInContext {
     String roman_numeral;
     float num_beats;//might need to change this to a fraction class at some point.
 
+    /**
+     * 
+     * @param chord
+     * @param key
+     * @param num_beats Please remember that num_beats is a float, 
+     * and thereby needs to have an appended f after the value.
+     */
     public ChordInContext(Chord chord, Key key, float num_beats) {
         this.chord = chord;
         this.key = key;
@@ -26,6 +33,10 @@ public class ChordInContext {
 
     public Key get_key() {
         return key;
+    }
+
+    public float get_num_beats(){
+        return num_beats;
     }
 
     public ChordFunction get_function() {
@@ -51,8 +62,8 @@ public class ChordInContext {
         Note chord_root = c.getRoot();
         Note key_root = k.getRoot();
         Note[] temp = new Note[2];
-        temp[0] = chord_root;
-        temp[1] = key_root;
+        temp[1] = chord_root;
+        temp[0] = key_root;
         //%12 handles an octave difference (12 semitones to an octave in western music)
         int num_semitones = Intervals.createIntervalsFromNotes(temp).toHalfstepArray()[1] % 12;
 

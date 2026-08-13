@@ -51,6 +51,14 @@ public class TestDriver {
         assertTrue(true);
     }
 
+
+    @Test
+    public void LL_testing(){
+        out.println("----Testing RhythmicChordProgression Linked Lists----\n");
+        RhythmicChordProgression c = this.sample_progression_part_full();
+        out.print(c.toString());
+    }
+
     @Test
     public void investigate_chord_note_constructor(){
 
@@ -138,7 +146,7 @@ public class TestDriver {
     @Test
     public void set_chord_function(){
         out.println("----Chord Function Checker----\n");
-        out.println(this.sample_progression().get_start_chord());
+        out.println(this.sample_progression_empty().get_start_chord());
         assertTrue(true);
     }
 
@@ -168,7 +176,7 @@ public class TestDriver {
         }
     }
 
-    private RhythmicChordProgression sample_progression(){
+    private RhythmicChordProgression sample_progression_empty(){
         Chord sc = new Chord("C");
         Chord ec = new Chord("F");
         Key sk = new Key(new Note("C"), Scale.MAJOR);
@@ -176,5 +184,12 @@ public class TestDriver {
         int[] time = {4, 4};
         int num_measures = 7;
         return new RhythmicChordProgression(sc, sk, time, num_measures, ec, ek);
+    }
+
+    private RhythmicChordProgression sample_progression_part_full(){
+        RhythmicChordProgression test = this.sample_progression_empty();
+        test.add(new ChordInContext(new Chord("DMIN7"), 
+        new Key(new Note("C"), Scale.MAJOR), 4f), true);
+        return test;
     }
 }
