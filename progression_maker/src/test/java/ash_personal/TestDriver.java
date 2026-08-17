@@ -57,6 +57,14 @@ public class TestDriver {
         out.println("----Testing RhythmicChordProgression Linked Lists----\n");
         RhythmicChordProgression c = this.sample_progression_part_full();
         out.print(c.toString());
+
+
+        out.println("----Testing adding LLs to LLs----\n");
+        //add to an empty progression.
+        RhythmicChordProgression d = this.sample_progression_empty();
+        d.add(c, false);
+        out.print(d.toString());
+
     }
 
     @Test

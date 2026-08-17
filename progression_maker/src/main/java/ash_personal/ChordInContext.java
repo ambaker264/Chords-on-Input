@@ -11,11 +11,13 @@ import org.jfugue.theory.Note;
  */
 public class ChordInContext {
 
-    Chord chord;
-    Key key;
-    ChordFunction function;
-    String roman_numeral;
-    float num_beats;//might need to change this to a fraction class at some point.
+    private Chord chord;
+    private Key key;
+    private ChordFunction function;
+    private String roman_numeral;
+    private int twelve_tone_degree;
+    private float num_beats;//might need to change this to a fraction class at some point.
+
 
     /**
      * 
@@ -31,8 +33,20 @@ public class ChordInContext {
         this.roman_numeral = get_roman_numeral(chord, key);
     }
 
+    public void set_chord_function(ChordFunction f){
+        this.function = f;
+    }
+
+    public void set_chord_function(){
+        this.function = ChordFunction.get_chord_function(this, this.key);
+    }
+
     public Key get_key() {
         return key;
+    }
+
+    public int get_twelve_tone_degree(){
+        return twelve_tone_degree;
     }
 
     public float get_num_beats(){
@@ -66,6 +80,7 @@ public class ChordInContext {
         temp[0] = key_root;
         //%12 handles an octave difference (12 semitones to an octave in western music)
         int num_semitones = Intervals.createIntervalsFromNotes(temp).toHalfstepArray()[1] % 12;
+        this.twelve_tone_degree = num_semitones;
 
         switch (num_semitones) {
             case 0 ->

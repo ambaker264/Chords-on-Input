@@ -68,6 +68,9 @@ public class RhythmicChordProgression {
             return false; 
         }
         for(ChordInContext current : smaller){
+            if(current != null && current.get_num_beats() < 0.1f){
+                continue;
+            }
             this.add(current, front_back);
         }
         return true;
@@ -122,7 +125,7 @@ public class RhythmicChordProgression {
                     to_check++;
                 }
             }else{
-                temp = this.progression.get(progression.size() - to_check);
+                temp = this.progression.get(progression.size() - to_check - 1);
                 if(temp == null){
                     return progression.size() - to_check;
                 }else{
