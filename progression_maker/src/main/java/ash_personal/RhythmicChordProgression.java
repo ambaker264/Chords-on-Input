@@ -103,7 +103,7 @@ public class RhythmicChordProgression {
             return true;
         }
         this.progression.add(this.add_index(front_back), to_add);
-        this.availible_beats -= to_add.num_beats;
+        this.availible_beats -= to_add.get_num_beats();
         return true;
     }
 

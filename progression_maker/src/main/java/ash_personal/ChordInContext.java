@@ -38,7 +38,7 @@ public class ChordInContext {
     }
 
     public void set_chord_function(){
-        this.function = ChordFunction.get_chord_function(this, this.key);
+        this.function = ChordFunction.get_chord_function(this);
     }
 
     public Key get_key() {

@@ -1,16 +1,18 @@
 package ash_personal;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.jfugue.theory.Chord;
-import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 import org.jfugue.theory.Note;
 import org.jfugue.theory.Scale;
 
 public class ProgressionMaker {
     private static int num_obj = 0;
+    private static final int NUM_TO_GENERATE = 1000;
+
     private int id;
     private Chord start_chord;
     private Chord end_chord;
@@ -24,7 +26,7 @@ public class ProgressionMaker {
 
     private final PrintStream out_stream;
 
-    private ChordProgression output;
+    private RhythmicChordProgression output;
 
     /**
      * 
@@ -51,6 +53,32 @@ public class ProgressionMaker {
         if(!usable_object){
             throw new IllegalStateException("Exited during input, unusable object.");
         }
+        RhythmicChordProgression base = this.setup_progression();
+
+        ArrayList<ProgressionFiller> all_threads = new ArrayList<>();
+
+        for(int i = 0; i < NUM_TO_GENERATE; i++){
+            all_threads.add(new ProgressionFiller(base));
+        }
+        //now that we have created all the objects, we need to start all of the threads, then join all of them.
+        for(ProgressionFiller current : all_threads){
+            current.start();
+        }
+        for(ProgressionFiller current : all_threads){
+            try {
+               current.join(); 
+            } catch (InterruptedException e) {
+                System.err.println(e.getMessage());
+                current.set_unusable();
+            }
+        }
+        ArrayList<RhythmicChordProgression> finished_progs = new ArrayList<>();
+        for(ProgressionFiller current : all_threads){
+            finished_progs.add(current.get_filled_list());
+        }
+
+        //now we have to pick which progressions we like, how many of them to display, etc.
+
     }
 
     public Chord get_start_chord(){
@@ -75,6 +103,17 @@ public class ProgressionMaker {
 
     public boolean usable(){
         return usable_object;
+    }
+
+    private RhythmicChordProgression setup_progression() throws IllegalArgumentException{
+        ChordInContext start = new ChordInContext(start_chord, start_key, 0);
+        ChordInContext end = new ChordInContext(end_chord, end_key, 0);
+        start.set_chord_function();
+        end.set_chord_function();
+        if(start.get_function() == ChordFunction.UNKNOWN || end.get_function() == ChordFunction.UNKNOWN){
+            throw new IllegalArgumentException("Start or end chord not diatonic to key. Support not added yet.");
+        } 
+        return new RhythmicChordProgression(start_chord, start_key, time_signature, num_measures, end_chord, end_key);
     }
 
     private boolean get_input(){
