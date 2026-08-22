@@ -51,7 +51,6 @@ public class TestDriver {
         assertTrue(true);
     }
 
-
     @Test
     public void LL_testing(){
         out.println("----Testing RhythmicChordProgression Linked Lists----\n");
@@ -108,7 +107,7 @@ public class TestDriver {
     @Test
     public void genprog_input(){
         System.out.println("----STARTING BASIC GENPROG INPUT TEST----\n");
-        this.run_test("genprog C maj C maj ggg CMAJ CMAJ7 3 4 8");
+        this.run_test("genprog C maj C maj ggg CMAJ CMAJ7 3 4 8 exit");
 
         this.testClose();
         assertTrue(true);

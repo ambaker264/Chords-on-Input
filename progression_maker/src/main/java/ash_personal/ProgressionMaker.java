@@ -64,12 +64,12 @@ public class ProgressionMaker {
         for(ProgressionFiller current : all_threads){
             current.start();
         }
-        for(ProgressionFiller current : all_threads){
+        for(int i = 0; i < all_threads.size(); i++){
             try {
-               current.join(); 
+               all_threads.get(i).join();
             } catch (InterruptedException e) {
                 System.err.println(e.getMessage());
-                current.set_unusable();
+                all_threads.get(i).set_unusable();
             }
         }
         ArrayList<RhythmicChordProgression> finished_progs = new ArrayList<>();
@@ -78,7 +78,7 @@ public class ProgressionMaker {
         }
 
         //now we have to pick which progressions we like, how many of them to display, etc.
-
+        
     }
 
     public Chord get_start_chord(){
@@ -119,22 +119,22 @@ public class ProgressionMaker {
     private boolean get_input(){
 
         out_stream.println("\n----Starting Key:----\n");
-        if(!get_key(start_key)){
+        if(!get_key(true)){
             return false;
         }
 
         out_stream.println("\n----Ending Key:----\n");
-        if(!get_key(end_key)){
+        if(!get_key(false)){
             return false;
         }
 
         out_stream.println("\n----Starting Chord:----\n");
-        if(!get_chord(start_chord)){
+        if(!get_chord(true)){
             return false;
         }
  
         out_stream.println("\n----Ending Chord:----\n");
-        if(!get_chord(end_chord)){
+        if(!get_chord(false)){
             return false;
         }
 
@@ -205,7 +205,7 @@ public class ProgressionMaker {
     }
 
     /*Just using jfugue's chord labeling system, not too bad. Will check for validity of course.*/
-    private boolean get_chord(Chord to_get){
+    private boolean get_chord(boolean start_end){
         boolean cont_while = true;
         while(cont_while){
             cont_while = false;
@@ -215,7 +215,11 @@ public class ProgressionMaker {
                 return false;
             }
             try{
-                to_get = new Chord(input);
+                if(start_end){
+                    this.start_chord = new Chord(input);
+                }else{
+                    this.end_chord = new Chord(input);
+                }
             }catch(NullPointerException e){
                 out_stream.println("Invalid input, please try again, or consult jfugue style for chord input.");
                 cont_while = true;
@@ -224,10 +228,11 @@ public class ProgressionMaker {
         return true;
     }
 
-    private boolean get_key(Key to_get){
+    private boolean get_key(boolean start_end){
         boolean getting_key = true;
         String key_root;
         String key_maj_min;
+        Key to_get = null;
         while(getting_key){
             boolean root_valid;
             boolean majmin_valid;
@@ -264,7 +269,6 @@ public class ProgressionMaker {
 
             key_root = key_root.toLowerCase();
             key_root = key_root.strip();
-
 
             switch(key_root){
                 case "exit", "quit", "stop" -> {
@@ -328,6 +332,12 @@ public class ProgressionMaker {
             }else{
                 out_stream.println("Invalid Root or Major Minor Designation. Please Try again.");
             }
+        }
+        //finally assign the key
+        if(start_end){
+            this.start_key = to_get;
+        }else{
+            this.end_key = to_get;
         }
 
         return true;
