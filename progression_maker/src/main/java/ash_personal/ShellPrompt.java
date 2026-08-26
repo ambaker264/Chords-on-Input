@@ -38,6 +38,7 @@ public final class ShellPrompt {
      * multiple instances of the object and calling {@code startShell()} twice.
      */
     public void startShell() throws IllegalStateException{
+
         if(mainloop_running){
             throw new IllegalStateException("Main Loop Already Running");
         }
