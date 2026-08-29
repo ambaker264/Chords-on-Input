@@ -2,6 +2,7 @@ package ash_personal;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 import org.jfugue.theory.Chord;
@@ -12,6 +13,8 @@ import org.jfugue.theory.Scale;
 public class ProgressionMaker {
     private static int num_obj = 0;
     private static final int NUM_TO_GENERATE = 1; //number of threads that generate progressions to generate
+    private static final int NUM_TO_DISPLAY = 1; /**number of progressions shown
+    on output. never should be bigger than NUM_TO_GENERATE*/
 
     private int id;
     private Chord start_chord;
@@ -26,7 +29,7 @@ public class ProgressionMaker {
 
     private final PrintStream out_stream;
 
-    private RhythmicChordProgression output;
+    private ArrayList<RhythmicChordProgression> output;
 
     /**
      * 
@@ -42,6 +45,22 @@ public class ProgressionMaker {
         if(!usable_object){
             System.err.println("Object unusable, quit during constructor.");
         }
+    }
+
+    public void print_results(){
+        StringBuilder out = new StringBuilder();
+        out.append("----RESULTING PROGRESSIONS (TOP ");
+        out.append(NUM_TO_DISPLAY);
+        out.append(")----\n");
+        for(int i = 0; i < NUM_TO_DISPLAY; i++){
+            out.append("Progression #");
+            out.append(i + 1);
+            out.append(" of ");
+            out.append(NUM_TO_DISPLAY);
+            out.append(":\n\n");
+            out.append(this.output.get(i).toString());
+        }
+        this.out_stream.println(out);
     }
 
     /**
@@ -74,10 +93,16 @@ public class ProgressionMaker {
         }
         ArrayList<RhythmicChordProgression> finished_progs = new ArrayList<>();
         for(ProgressionFiller current : all_threads){
-            finished_progs.add(current.get_filled_list());
+            RhythmicChordProgression to_add = current.get_filled_list();
+            to_add.set_prog_score(current.get_score());
+            finished_progs.add(to_add);
         }
 
         //now we have to pick which progressions we like, how many of them to display, etc.
+        Collections.sort(finished_progs);
+        Collections.reverse(finished_progs);
+        
+        this.output = finished_progs;
         
     }
 

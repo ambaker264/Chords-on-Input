@@ -12,11 +12,14 @@ import org.jfugue.theory.Scale;
 
 /**
  * A chord progression with a rhythmic component added as well, implemented in a linked list. 
- * Stored in roman numeral form through private class {@link ChordInContext}.
+ * Stored in roman numeral form through class {@link ChordInContext}, as well as 
+ * can use base {@link ChordProgression} for more roman numeral support.
+ * 
+ * Comes loaded with many sample progressions to be used in making larger ones.
  */
-public class RhythmicChordProgression {
+public class RhythmicChordProgression implements Comparable<RhythmicChordProgression>{
 
-    private static int DEFAULT_WEIGHT = 10;
+    private static final int DEFAULT_WEIGHT = 10;
 
     public static final ArrayList<RhythmicChordProgression> in_key_progs = new ArrayList<>();
     public static final ArrayList<RhythmicChordProgression> change_key_progs = new ArrayList<>(); 
@@ -72,13 +75,13 @@ public class RhythmicChordProgression {
 
         major_progs.add(new ChordProgression("ii bII7 I"));
         major_progs.add(new ChordProgression("IMAJ7 IV7 IMAJ7 IMAJ7"));
-        major_progs.add(new ChordProgression("ii bII7 I"));
-        major_progs.add(new ChordProgression("ii bII7 I"));
+        major_progs.add(new ChordProgression("V7"));
+        major_progs.add(new ChordProgression("V7 bII7"));
 
 
         //corresponding weights for each of the progressions
         int[] major_prog_weights = new int[] {40, 15, 35, 30, 20, 20, 20, 5,
-            15, 
+            15, DEFAULT_WEIGHT, DEFAULT_WEIGHT, 5
         };
 
         //add minor progressions here
@@ -162,6 +165,7 @@ public class RhythmicChordProgression {
     private Key end_key;
 
     private int progression_weight;
+    private int finished_prog_score = 0;
 
     /**
      * 
@@ -346,6 +350,15 @@ public class RhythmicChordProgression {
         return out.toString();
     }
 
+    /**
+     * Compares based on the proression score given after running the thread.
+     * @param progression
+     * @return
+     */
+    @Override
+    public int compareTo(RhythmicChordProgression progression){
+        return Integer.compare(this.finished_prog_score, progression.finished_prog_score);
+    }
 
     /**
      * here for testing largely. use get_schord() for the ChordInContext
@@ -353,6 +366,10 @@ public class RhythmicChordProgression {
      */
     public String get_start_chord(){
         return start_chord.toString();
+    }
+
+    public void set_prog_score(int score){
+        this.finished_prog_score = score;
     }
 
     public ChordInContext get_schord(){

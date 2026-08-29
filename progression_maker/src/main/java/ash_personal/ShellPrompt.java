@@ -123,7 +123,9 @@ public final class ShellPrompt {
                 if(!prog_maker.usable()){
                     System.err.println("Invalid input on this object, cannot Create Progression.");
                 }else{
-                    prog_maker.make_progression(); //this is the expensive task.
+                    prog_maker.make_progression(); //this is the expensive task, calls everything else
+                    //now we just handle output.
+                    prog_maker.print_results();
                 }
             }
             default -> output_location.println(INVALID_COMMAND_STRING);

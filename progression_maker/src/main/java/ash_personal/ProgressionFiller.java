@@ -25,10 +25,10 @@ public class ProgressionFiller extends Thread{
         random = new Random((long) SEED);
     }
 
-    private RhythmicChordProgression to_fill;
+    private final RhythmicChordProgression to_fill;
     private int front_idx;
     private int back_idx;
-    private int thread_id;
+    private final int thread_id;
     private boolean finished_running = false;
     private boolean usable = true;
     private int prog_score;
@@ -44,6 +44,7 @@ public class ProgressionFiller extends Thread{
     public void run(){
         System.out.println("Starting thread #" + thread_id); //test statment
         this.fill_progression();
+        this.score_progression();
         finished_running = true;
     }
 
@@ -59,6 +60,27 @@ public class ProgressionFiller extends Thread{
     }
     public void set_unusable(){
         this.usable = false;
+    }
+    public int get_score(){
+        return this.prog_score;
+    }
+
+
+    private int score_progression(){
+        int score = 0;
+        //we go through the progression, adding and subtracting score
+        //based on "good" things in it, and use it to pick which ones to show
+        ChordInContext preceding = null;
+        for(ChordInContext current : this.to_fill.getLL()){
+            if(preceding == null){
+                preceding = current;
+                continue; //just skip
+            }
+            /**Need to figure out internal logic here. Once done, we can actually make the function*/
+
+        }
+        this.prog_score = score;
+        return score;
     }
 
     /**
@@ -79,14 +101,11 @@ public class ProgressionFiller extends Thread{
             availible_progs = key_fix_progs(
                 to_fill.getLL().get(front_idx).get_key(), to_fill.getLL().get(back_idx).get_key(), front_back);
             //now we pick the progression that we add.
-            RhythmicChordProgression to_add = this.pick_from_list(availible_progs);
-            /**
-             * need to change index for front and back based on what we are about to add
-             * if add to front, front idx needs to have added the size of what we added.
-             * 
-             * IMPLEMENT LATER, THIS IS A FILLER
-             */
+            RhythmicChordProgression to_add = this.pick_from_list(availible_progs); 
+            
+            int temp = to_add.getLL().size();
             to_fill.add(to_add, front_back);
+            front_idx += to_fill.getLL().size() - temp;
         }
 
         //now that the key is the same between the progressions, we now need to fill in
@@ -201,6 +220,43 @@ public class ProgressionFiller extends Thread{
                         out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / DIV_FACTOR_SKIP_FUNCTION));
                     case -2, 1 -> //correct motion, i.e. tonic to subdominant
                         out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() * MULT_FACTOR_CORR_FUNCTION));
+                }
+            }
+        }else{
+            /**same deal, just going backwards instead*/
+            for(RhythmicChordProgression current : RhythmicChordProgression.in_key_progs){ 
+                //we want to add to the list, and maybe edit the weight if there isn't something we want
+                ChordFunction current_fun = current.get_echord().get_function();               
+                //weeding out all the chords that don't work.
+                //first check if diatonic
+                if(!current.get_echord().get_key().getScale().equals(ref_chord.get_key().getScale())){
+                    continue; //just skip the iteration if not diatonic
+                }
+                if(current.get_progression_length() > to_fill.get_availible_beats()){
+                    continue;
+                }else if(abs(current.get_progression_length() - to_fill.get_availible_beats()) < 0.1f){
+                    //floats make this tricky, but I want to give a bonus to progressions that will 
+                    //fill the progression completely, and finish it
+                    int temp = current_fun.get_value() - ref_chord.get_function().get_value(); 
+                    if(temp == -1 || temp == 2){
+                        current = new RhythmicChordProgression(current).set_weight(current.get_weight() * FILL_PROG_BONUS);
+                    }else{
+                        //if it completes the progression, but with the wrong motion, we don't want that.
+                        current = new RhythmicChordProgression(current).set_weight(current.get_weight() / FILL_PROG_WRONG_DIV);
+                    }
+                }
+                if(current_fun == ChordFunction.UNKNOWN || ref_chord.get_function() == ChordFunction.UNKNOWN){
+                    //if either is unknown, we can add support later, for now just skip it
+                    continue;
+                }
+
+                switch(current_fun.get_value() - ref_chord.get_function().get_value()){
+                    case 0 ->
+                        out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / DIV_FACTOR_SAME_FUNCTION));
+                    case -1, 2 ->
+                        out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() * MULT_FACTOR_CORR_FUNCTION));
+                    case -2, 1 ->
+                        out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / DIV_FACTOR_SKIP_FUNCTION));
                 }
             }
         }
