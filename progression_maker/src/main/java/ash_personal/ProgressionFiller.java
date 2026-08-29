@@ -1,5 +1,6 @@
 package ash_personal;
 
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
@@ -12,8 +13,10 @@ public class ProgressionFiller extends Thread{
 
     private final static int SEED = 0;
     private final static int DIV_FACTOR_SAME_FUNCTION = 2;
-    private final static int DIV_FACTOR_SKIP_FUNCTION = 10; //ie Tonic->dominant
-
+    private final static int DIV_FACTOR_SKIP_FUNCTION = 5; //ie Tonic->dominant
+    private final static int MULT_FACTOR_CORR_FUNCTION = 2;
+    private final static int FILL_PROG_BONUS = 5; //multiplier to weight
+    private final static int FILL_PROG_WRONG_DIV = 5;
 
     private final static Random random;
     private static int thread_count=0;
@@ -164,13 +167,40 @@ public class ProgressionFiller extends Thread{
         if(front_back){
             //from the front, so we follow our cycle of Subdominant->Dominant-->Tonic
             for(RhythmicChordProgression current : RhythmicChordProgression.in_key_progs){
+ 
                 //we want to add to the list, and maybe edit the weight if there isn't something we want
-                ChordFunction current_fun = current.get_schord().get_function();
-                if(current_fun == ref_chord.get_function()){
-                    //same function, not always a great move to make.
-                    out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / ProgressionFiller.DIV_FACTOR_SAME_FUNCTION));
-                }else{
-                    
+                ChordFunction current_fun = current.get_schord().get_function();               
+                //weeding out all the chords that don't work.
+                //first check if diatonic
+                if(!current.get_schord().get_key().getScale().equals(ref_chord.get_key().getScale())){
+                    continue; //just skip the iteration if not diatonic
+                }
+
+                if(current.get_progression_length() > to_fill.get_availible_beats()){
+                    continue;
+                }else if(abs(current.get_progression_length() - to_fill.get_availible_beats()) < 0.1f){
+                    //floats make this tricky, but I want to give a bonus to progressions that will 
+                    //fill the progression completely, and finish it
+                    int temp = current_fun.get_value() - ref_chord.get_function().get_value(); 
+                    if(temp == -2 || temp == 1){
+                        current = new RhythmicChordProgression(current).set_weight(current.get_weight() * FILL_PROG_BONUS);
+                    }else{
+                        //if it completes the progression, but with the wrong motion, we don't want that.
+                        current = new RhythmicChordProgression(current).set_weight(current.get_weight() / FILL_PROG_WRONG_DIV);
+                    }
+                }
+                if(current_fun == ChordFunction.UNKNOWN || ref_chord.get_function() == ChordFunction.UNKNOWN){
+                    //if either is unknown, we can add support later, for now just skip it
+                    continue;
+                }
+
+                switch(current_fun.get_value() - ref_chord.get_function().get_value()){
+                    case 0 -> //i.e. dominant to dominant
+                        out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / DIV_FACTOR_SAME_FUNCTION));
+                    case -1, 2 -> //i.e. going subdominant to tonic, dominant to subdominant, 2 is tonic to dominant
+                        out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / DIV_FACTOR_SKIP_FUNCTION));
+                    case -2, 1 -> //correct motion, i.e. tonic to subdominant
+                        out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() * MULT_FACTOR_CORR_FUNCTION));
                 }
             }
         }

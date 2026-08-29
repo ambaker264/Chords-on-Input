@@ -62,10 +62,24 @@ public class RhythmicChordProgression {
 
         //can keep on adding here, and it will be loaded into all keys.
         major_progs.add(new ChordProgression("ii V I"));
+        major_progs.add(new ChordProgression("ii V I6"));
         major_progs.add(new ChordProgression("ii V"));
         major_progs.add(new ChordProgression("V I"));
+        major_progs.add(new ChordProgression("iii VI7 ii V I"));
+        major_progs.add(new ChordProgression("iii VI7 ii V"));
+        major_progs.add(new ChordProgression("VI7 ii V I"));
+        major_progs.add(new ChordProgression("VI7 ii bII7"));
 
-        int[] major_prog_weights = new int[] {DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT};
+        major_progs.add(new ChordProgression("ii bII7 I"));
+        major_progs.add(new ChordProgression("IMAJ7 IV7 IMAJ7 IMAJ7"));
+        major_progs.add(new ChordProgression("ii bII7 I"));
+        major_progs.add(new ChordProgression("ii bII7 I"));
+
+
+        //corresponding weights for each of the progressions
+        int[] major_prog_weights = new int[] {40, 15, 35, 30, 20, 20, 20, 5,
+            15, 
+        };
 
         //add minor progressions here
         minor_progs.add(new ChordProgression("v i"));
@@ -333,13 +347,20 @@ public class RhythmicChordProgression {
     }
 
 
-    //largely here for testing purposes.
+    /**
+     * here for testing largely. use get_schord() for the ChordInContext
+     * @return
+     */
     public String get_start_chord(){
         return start_chord.toString();
     }
 
     public ChordInContext get_schord(){
         return this.start_chord;
+    }
+
+    public ChordInContext get_echord(){
+        return this.end_chord;
     }
 
     public float get_availible_beats(){
