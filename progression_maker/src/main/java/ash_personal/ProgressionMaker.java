@@ -11,7 +11,7 @@ import org.jfugue.theory.Scale;
 
 public class ProgressionMaker {
     private static int num_obj = 0;
-    private static final int NUM_TO_GENERATE = 1000;
+    private static final int NUM_TO_GENERATE = 1; //number of threads that generate progressions to generate
 
     private int id;
     private Chord start_chord;

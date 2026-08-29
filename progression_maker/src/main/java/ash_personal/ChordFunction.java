@@ -3,7 +3,7 @@ package ash_personal;
 import org.jfugue.theory.Scale;
 
 public enum ChordFunction {
-    DOMINANT, SUBDOMINANT, TONIC, UNKNOWN;
+    TONIC, SUBDOMINANT, DOMINANT, UNKNOWN;
 
     /**
      * Returns the chord's function based on common understanding of music theory.

@@ -1,6 +1,7 @@
 package ash_personal;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 import org.jfugue.theory.Key;
@@ -10,6 +11,10 @@ import org.jfugue.theory.Key;
 public class ProgressionFiller extends Thread{
 
     private final static int SEED = 0;
+    private final static int DIV_FACTOR_SAME_FUNCTION = 2;
+    private final static int DIV_FACTOR_SKIP_FUNCTION = 10; //ie Tonic->dominant
+
+
     private final static Random random;
     private static int thread_count=0;
 
@@ -75,6 +80,8 @@ public class ProgressionFiller extends Thread{
             /**
              * need to change index for front and back based on what we are about to add
              * if add to front, front idx needs to have added the size of what we added.
+             * 
+             * IMPLEMENT LATER, THIS IS A FILLER
              */
             to_fill.add(to_add, front_back);
         }
@@ -90,15 +97,12 @@ public class ProgressionFiller extends Thread{
             //now we pick the progression that we add.
             RhythmicChordProgression to_add = this.pick_from_list(availible_progs);
             if(front_back){
-                front_idx += to_add.getLL().size() - 3; //3 dummy variables.
+                front_idx += to_add.getLL().size(); //no dummy variables here at start/end
             }else{
-                back_idx += to_add.getLL().size() - 3;
+                back_idx += to_add.getLL().size();
             }
             to_fill.add(to_add, front_back);
         }
-
-        //progression is now filled.
-
     }
 
     /**
@@ -135,9 +139,41 @@ public class ProgressionFiller extends Thread{
 
     private ArrayList<RhythmicChordProgression> same_key_progs(Key key, boolean front_back){
         ArrayList<RhythmicChordProgression> out = new ArrayList<>();
+        ChordInContext ref_chord = null;
+        //find our reference chord
+        LinkedList<ChordInContext> check_through = this.to_fill.getLL();
+        boolean cont = true;
+        int ref_idx = 0;
 
-        //we will have a database of viable chord progressions in key, made on initialization.
+        //this loop shouldn't go infinite, it will throw an IndexOutOfBounds if an error exists.
+        while(cont){
+            ChordInContext current = check_through.get(ref_idx);
+            if(check_through.get(ref_idx + 1) == null){
+                if(front_back){
+                    ref_chord = current;
+                }else{
+                    ref_chord = check_through.get(ref_idx + 2);
+                }
+                cont = false;
+            }else{
+                ref_idx++;
+            }
+        }
         
+        //we will have a database of viable chord progressions in key, made on initialization.
+        if(front_back){
+            //from the front, so we follow our cycle of Subdominant->Dominant-->Tonic
+            for(RhythmicChordProgression current : RhythmicChordProgression.in_key_progs){
+                //we want to add to the list, and maybe edit the weight if there isn't something we want
+                ChordFunction current_fun = current.get_schord().get_function();
+                if(current_fun == ref_chord.get_function()){
+                    //same function, not always a great move to make.
+                    out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / ProgressionFiller.DIV_FACTOR_SAME_FUNCTION));
+                }else{
+                    
+                }
+            }
+        }
 
 
         return out;

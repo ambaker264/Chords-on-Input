@@ -2,10 +2,10 @@ package ash_personal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
-import java.util.Stack;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Stack;
 
 /**
  * Basic shell interface for the program, prompting the user for input. 
@@ -28,6 +28,7 @@ public final class ShellPrompt {
     public ShellPrompt(){
         prev_Commands = new Stack<String>();
         prev_Commands_temp = new Stack<String>();
+        make_history = new ArrayList<>();
     } 
 
 

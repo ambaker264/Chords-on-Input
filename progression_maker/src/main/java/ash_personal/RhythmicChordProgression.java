@@ -132,7 +132,8 @@ public class RhythmicChordProgression {
             prog_weight_idx++; //advance one in the array to correspond with the new progression
         }
 
-        //now we add the progressions that change keys, this must be done more by hand.
+        //now we add the progressions that change keys, this must be done more by hand. add support for this
+        // later for now, just please get this finished
 
     }
 
@@ -337,6 +338,10 @@ public class RhythmicChordProgression {
         return start_chord.toString();
     }
 
+    public ChordInContext get_schord(){
+        return this.start_chord;
+    }
+
     public float get_availible_beats(){
         return availible_beats;
     }
@@ -353,8 +358,9 @@ public class RhythmicChordProgression {
         return this.progression_weight;
     }
 
-    public void set_weight(int weight){
+    public RhythmicChordProgression set_weight(int weight){
         this.progression_weight = weight;
+        return this;
     }
 
     /** 

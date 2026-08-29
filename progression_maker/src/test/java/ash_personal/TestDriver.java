@@ -52,6 +52,14 @@ public class TestDriver {
     }
 
     @Test
+    public void progression_loader_check(){
+        out.println("----Testing RhythmicChordProgression Static Block----\n");
+        for(RhythmicChordProgression current : RhythmicChordProgression.in_key_progs){
+            out.print(current.toString());
+        }
+    }
+
+    @Test
     public void LL_testing(){
         out.println("----Testing RhythmicChordProgression Linked Lists----\n");
         RhythmicChordProgression c = this.sample_progression_part_full();
