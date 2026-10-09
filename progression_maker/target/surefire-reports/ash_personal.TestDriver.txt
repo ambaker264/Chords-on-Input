@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: ash_personal.TestDriver
 -------------------------------------------------------------------------------
-Tests run: 10, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 67.99 s <<< FAILURE! -- in ash_personal.TestDriver
-ash_personal.TestDriver.genprog_input -- Time elapsed: 67.85 s <<< FAILURE!
+Tests run: 11, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.405 s <<< FAILURE! -- in ash_personal.TestDriver
+ash_personal.TestDriver.genprog_input -- Time elapsed: 0.067 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -10,8 +10,8 @@ org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
 	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
 	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
 	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
-	at ash_personal.TestDriver.run_test(TestDriver.java:182)
-	at ash_personal.TestDriver.genprog_input(TestDriver.java:118)
+	at ash_personal.TestDriver.run_test(TestDriver.java:188)
+	at ash_personal.TestDriver.genprog_input(TestDriver.java:124)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)

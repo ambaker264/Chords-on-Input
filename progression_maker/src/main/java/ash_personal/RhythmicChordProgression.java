@@ -77,11 +77,17 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
         major_progs.add(new ChordProgression("IMAJ7 IV7 IMAJ7 IMAJ7"));
         major_progs.add(new ChordProgression("V7"));
         major_progs.add(new ChordProgression("V7 bII7"));
-
+        major_progs.add(new ChordProgression("iv7 bVII7 I"));
+        major_progs.add(new ChordProgression("iv7 bVII7"));
+        major_progs.add(new ChordProgression("IMAJ7, bIII7, bVI7, bII7"));
+        major_progs.add(new ChordProgression("V7 IV7 I"));
 
         //corresponding weights for each of the progressions
-        int[] major_prog_weights = new int[] {40, 15, 35, 30, 20, 20, 20, 5,
-            15, DEFAULT_WEIGHT, DEFAULT_WEIGHT, 5
+        int[] major_prog_weights = new int[] {
+            40, 15, 35, 30, 20, 20, 20, 5,
+
+            15, DEFAULT_WEIGHT, DEFAULT_WEIGHT, 5, DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT,
+
         };
 
         //add minor progressions here

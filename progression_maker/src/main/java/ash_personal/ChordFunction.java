@@ -28,12 +28,12 @@ public enum ChordFunction {
             return switch (rom_num) {
                 case "I", "IMAJ7", "I6" -> ChordFunction.TONIC;
                 case "bII7" -> ChordFunction.DOMINANT;
-                case "ii", "ii7" -> ChordFunction.SUBDOMINANT;
+                case "ii", "ii7, iv, iv7" -> ChordFunction.SUBDOMINANT;
                 case "iii", "iii7" -> ChordFunction.TONIC;
                 case "IVMAJ7", "IV" -> ChordFunction.SUBDOMINANT;
                 case "V", "V7" -> ChordFunction.DOMINANT;
                 case "vi", "vi7" -> ChordFunction.TONIC;
-                case "VIIDIM7" -> ChordFunction.DOMINANT;
+                case "VIIDIM7", "bvii7" -> ChordFunction.DOMINANT;
                 default -> ChordFunction.UNKNOWN;
             };
         } else if(chord.get_key().getScale().equals(Scale.MINOR)){
