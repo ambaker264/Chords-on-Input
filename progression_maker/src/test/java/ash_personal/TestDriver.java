@@ -62,7 +62,9 @@ public class TestDriver {
     @Test
     public void progression_filler_check(){
         out.println("----Testing Filling A Chord Progression-----\n");
-
+        ProgressionFiller to_test = new ProgressionFiller(this.sample_progression_empty());
+        to_test.run();
+        out.println(to_test.get_filled_list().toString());
     }
 
     @Test
@@ -191,7 +193,7 @@ public class TestDriver {
 
     private void testClose(){
         try { 
-            in.close();  
+            in.close();
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
