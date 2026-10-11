@@ -31,6 +31,7 @@ public class ChordInContext {
         this.key = key;
         this.num_beats = num_beats;
         this.roman_numeral = get_roman_numeral(chord, key);
+        this.function = ChordFunction.get_chord_function(this); //generally don't do this, but I made it this way so its fine
     }
 
     public void set_chord_function(ChordFunction f){

@@ -181,7 +181,7 @@ public class TestDriver {
                 shellObj.new_input_source(this.in);
                 shellObj.new_output_source(this.out);
             } catch (Exception e) {
-                System.err.println(e.getMessage());
+                out.println(e.getMessage());
                 assertTrue(false);
             }
             shellObj.startShell(); //actually runs the program
@@ -203,7 +203,7 @@ public class TestDriver {
         Chord sc = new Chord("C");
         Chord ec = new Chord("F");
         Key sk = new Key(new Note("C"), Scale.MAJOR);
-        Key ek = new Key(new Note("F"), Scale.MAJOR);
+        Key ek = new Key(new Note("C"), Scale.MAJOR);
         int[] time = {4, 4};
         int num_measures = 7;
         return new RhythmicChordProgression(sc, sk, time, num_measures, ec, ek);

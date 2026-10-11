@@ -82,12 +82,25 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
         major_progs.add(new ChordProgression("IMAJ7, bIII7, bVI7, bII7"));
         major_progs.add(new ChordProgression("V7 IV7 I"));
 
+        major_progs.add(new ChordProgression("V"));
+        major_progs.add(new ChordProgression("ii"));        
+        major_progs.add(new ChordProgression("IV"));
+        major_progs.add(new ChordProgression("IV7"));
+        major_progs.add(new ChordProgression("VI7"));
+        major_progs.add(new ChordProgression("vi7"));
+        major_progs.add(new ChordProgression("I"));
+        major_progs.add(new ChordProgression("I6"));
+
+
+
+
         //corresponding weights for each of the progressions
         int[] major_prog_weights = new int[] {
             40, 15, 35, 30, 20, 20, 20, 5,
 
             15, DEFAULT_WEIGHT, DEFAULT_WEIGHT, 5, DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT,
 
+            DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT, 5, DEFAULT_WEIGHT, DEFAULT_WEIGHT, DEFAULT_WEIGHT  
         };
 
         //add minor progressions here
@@ -114,7 +127,7 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
                     //now we need to set the progression weight
                     temp.set_weight(major_prog_weights[prog_weight_idx]);
                     RhythmicChordProgression.in_key_progs.add(temp);
-
+                    translator.clear(); //clean it up for a new progression of half length
                     //now we add the half length progression
                     for(Chord chord : temp_chord_holder){
                         translator.add(new ChordInContext(chord, key, time_signature[0] / 2));
@@ -142,6 +155,8 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
                     //now we need to set the progression weight
                     temp.set_weight(minor_prog_weights[prog_weight_idx]);
                     RhythmicChordProgression.in_key_progs.add(temp);
+
+                    translator.clear();
 
                     //now we add the half length progression
                     for(Chord chord : temp_chord_holder){
@@ -222,6 +237,7 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
         this.availible_beats = to_copy.availible_beats;
         this.progression_weight = to_copy.progression_weight;
         this.num_measures = to_copy.num_measures;
+        this.num_beats = to_copy.num_beats;
 
         this.progression = to_copy.getLL(); //now we get a copy of the LL
     }
@@ -266,7 +282,7 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
      */
     public boolean add(RhythmicChordProgression smaller_progression, boolean front_back){
         LinkedList<ChordInContext> smaller = smaller_progression.getLL(); 
-        if(smaller_progression.get_progression_length() >= this.get_availible_beats()){
+        if(smaller_progression.get_progression_length() - this.get_availible_beats() > 0.1f){
             return false; 
         }
         for(ChordInContext current : smaller){
@@ -296,12 +312,12 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
         if(to_add.get_num_beats() > this.get_availible_beats()){
             return false;
         }
-        if(abs(to_add.get_num_beats() - this.get_availible_beats()) < 0.001f /*Handles float issues*/){
+        if(abs(to_add.get_num_beats() - this.get_availible_beats()) < 0.1f /*Handles float issues*/){
             //if we have completed the progression, then we get rid of the null in the center.
             int temp = this.add_index(true);
             this.progression.remove(null);
             this.progression.add(temp, to_add);
-            this.availible_beats = 0;
+            this.availible_beats = 0f;
             return true;
         }
         this.progression.add(this.add_index(front_back), to_add);
@@ -412,6 +428,10 @@ public class RhythmicChordProgression implements Comparable<RhythmicChordProgres
      */
     public float get_progression_length(){
         return (num_measures * time_signature[0]) - availible_beats;
+    }
+
+    public int[] get_time_signature(){
+        return this.time_signature;
     }
 
     /**

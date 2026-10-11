@@ -77,6 +77,8 @@ public class ProgressionFiller extends Thread{
                 continue; //just skip
             }
             /**Need to figure out internal logic here. Once done, we can actually make the function*/
+            //for now, just add up all the scores for chord motion ig? (i.e. the more chords the better)
+            score += 10; //just do this, give biggest score to newest prog ig.
 
         }
         this.prog_score = score;
@@ -87,8 +89,9 @@ public class ProgressionFiller extends Thread{
      * The major method that dictates how we fill a list, depending on how we add
      * to the progression. We take a random value after getting all possible progressions, 
      * and we pick based on each progression's weight.
+     * 
      */
-    private void fill_progression(){
+    private void fill_progression() {
         ArrayList<RhythmicChordProgression> availible_progs;
         boolean front_back;
 
@@ -115,7 +118,7 @@ public class ProgressionFiller extends Thread{
             synchronized(random){
                 front_back = random.nextBoolean();
             }
-            availible_progs = same_key_progs(this.to_fill.getLL().get(front_idx).get_key(), front_back);
+            availible_progs = same_key_progs(this.to_fill.getLL().get(front_idx).get_key(), front_back); 
             //now we pick the progression that we add.
             RhythmicChordProgression to_add = this.pick_from_list(availible_progs);
             if(front_back){
@@ -123,7 +126,9 @@ public class ProgressionFiller extends Thread{
             }else{
                 back_idx += to_add.getLL().size();
             }
-            to_fill.add(to_add, front_back);
+            if(!to_fill.add(to_add, front_back)){
+                throw new IllegalStateException("No progression that fills the progression properly.");
+            }
         }
     }
 
@@ -140,7 +145,7 @@ public class ProgressionFiller extends Thread{
         }
         int value;
         synchronized(random){
-            value = random.nextInt();
+            value = abs(random.nextInt());
         }
         value = value % sum;
         sum = 0;
@@ -168,6 +173,7 @@ public class ProgressionFiller extends Thread{
         int ref_idx = 0;
 
         //this loop shouldn't go infinite, it will throw an IndexOutOfBounds if an error exists.
+        //purpose is to get our reference chord
         while(cont){
             ChordInContext current = check_through.get(ref_idx);
             if(check_through.get(ref_idx + 1) == null){
@@ -194,7 +200,11 @@ public class ProgressionFiller extends Thread{
                 if(!current.get_schord().get_key().getScale().equals(ref_chord.get_key().getScale())){
                     continue; //just skip the iteration if not diatonic
                 }
-
+                if(current.get_time_signature()[0] != to_fill.get_time_signature()[0] || 
+                current.get_time_signature()[1] != to_fill.get_time_signature()[1]){
+                    continue;
+                }
+                //next check if too long
                 if(current.get_progression_length() > to_fill.get_availible_beats()){
                     continue;
                 }else if(abs(current.get_progression_length() - to_fill.get_availible_beats()) < 0.1f){
@@ -232,6 +242,10 @@ public class ProgressionFiller extends Thread{
                 if(!current.get_echord().get_key().getScale().equals(ref_chord.get_key().getScale())){
                     continue; //just skip the iteration if not diatonic
                 }
+                if(current.get_time_signature()[0] != to_fill.get_time_signature()[0] || 
+                current.get_time_signature()[1] != to_fill.get_time_signature()[1]){
+                    continue;
+                }
                 if(current.get_progression_length() > to_fill.get_availible_beats()){
                     continue;
                 }else if(abs(current.get_progression_length() - to_fill.get_availible_beats()) < 0.1f){
@@ -249,7 +263,8 @@ public class ProgressionFiller extends Thread{
                     //if either is unknown, we can add support later, for now just skip it
                     continue;
                 }
-
+                
+                //actually adds a new progression
                 switch(current_fun.get_value() - ref_chord.get_function().get_value()){
                     case 0 ->
                         out.add(new RhythmicChordProgression(current).set_weight(current.get_weight() / DIV_FACTOR_SAME_FUNCTION));
